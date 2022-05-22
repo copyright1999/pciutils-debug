@@ -64,7 +64,7 @@ PCIINC_INS=lib/config.h lib/header.h lib/pci.h lib/types.h
 
 export
 
-all: lib/$(PCILIB) lspci$(EXEEXT) setpci$(EXEEXT) example$(EXEEXT) lspci.8 setpci.8 pcilib.7 pci.ids.5 update-pciids update-pciids.8 $(PCI_IDS)
+all: lib/$(PCILIB) lspci$(EXEEXT) setpci$(EXEEXT) pci_header$(EXEEXT) example$(EXEEXT) lspci.8 setpci.8 pcilib.7 pci.ids.5 update-pciids update-pciids.8 $(PCI_IDS)
 
 lib/$(PCILIB): $(PCIINC) force
 	$(MAKE) -C lib all
@@ -107,6 +107,10 @@ update-pciids: update-pciids.sh
 example$(EXEEXT): example.o lib/$(PCILIB)
 example.o: example.c $(PCIINC)
 
+# The pci_header of use of libpci
+pci_header$(EXEEXT): pci_header.o lib/$(PCILIB)
+pci_header.o: pci_header.c $(PCIINC)
+
 %$(EXEEXT): %.o
 	$(CC) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS) -o $@
 
@@ -123,7 +127,7 @@ TAGS:
 
 clean:
 	rm -f `find . -name "*~" -o -name "*.[oa]" -o -name "\#*\#" -o -name TAGS -o -name core -o -name "*.orig"`
-	rm -f update-pciids lspci$(EXEEXT) setpci$(EXEEXT) example$(EXEEXT) lib/config.* *.[578] pci.ids.gz lib/*.pc lib/*.so lib/*.so.* tags
+	rm -f update-pciids lspci$(EXEEXT) setpci$(EXEEXT) pci_header$(EXEEXT) example$(EXEEXT) lib/config.* *.[578] pci.ids.gz lib/*.pc lib/*.so lib/*.so.* tags
 	rm -rf maint/dist
 
 distclean: clean
